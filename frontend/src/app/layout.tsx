@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackServerApp } from "../stack";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "../components/NavBar";
@@ -16,8 +18,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Frontend",
-  description: "DAWN Application",
+  title: "dawn.",
+  description: "dawn.",
 };
 
 export default function RootLayout({
@@ -27,11 +29,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="{`${geistSans.variable} ${geistMono.variable} antialiased`} flex flex-col min-h-screen">
+      <body className="{`${geistSans.variable} ${geistMono.variable} antialiased`}">
+        <StackProvider app={stackServerApp}><StackTheme>
         <Navbar />
         {children}
         <Footer />
-      </body>
+      </StackTheme></StackProvider></body>
     </html>
   );
 }
