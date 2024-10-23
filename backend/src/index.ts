@@ -7,7 +7,7 @@ console.log(
   `🦊 Elysia is running`
 );
 
-app.get('/data', async () => {
+app.get('/users', async () => {
   const rows = await db.execute('SELECT * FROM USERS');
   return rows;
 })
