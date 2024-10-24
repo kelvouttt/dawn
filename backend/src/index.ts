@@ -1,10 +1,10 @@
 import { Elysia } from "elysia";
 import { db } from "./database"
 
-const app = new Elysia()
+const app = new Elysia().listen(3001)
 
 console.log(
-  `🦊 Elysia is running`
+  `🦊 Elysia is running on port ${app.server?.port}`
 );
 
 app.get('/users', async () => {
@@ -29,5 +29,3 @@ app.get('/users', async () => {
   const rows = await db.execute('SELECT * FROM USERS');
   return rows;
 })
-
-app.listen(8888);
