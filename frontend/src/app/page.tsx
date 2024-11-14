@@ -4,7 +4,7 @@ import SideBar from "@/components/SideBar";
 
 export default async function Home() {
 
-  const data = await fetch('http://localhost:8888/sections');
+  const data = await fetch('http://localhost:8888/sections', { next: { revalidate: 600 }});
   const sections = await data.json();
 
   await stackServerApp.getUser({ or: 'redirect' });
@@ -15,10 +15,10 @@ export default async function Home() {
         <h1>Start learning</h1>
       </div>
       <div className="">
-        <ul>
-          {sections.map((section) => 
+        <ul className='list-none'>
+          {sections.data.map((section) => 
             <li key={ section.section_id }>
-              <Link href={`/learn/${section.slug_field}`} className='hover:text-indigo-800 hover:text-lg'>{section.section_name}</Link>
+              <Link href={`/learn/${section.slug_field}`} className='hover:text-indigo-800 hover:font-bold no-underline'>{section.section_name}</Link>
             </li>
           )}
         </ul>
