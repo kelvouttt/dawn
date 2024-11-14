@@ -3,8 +3,9 @@ import { stackServerApp } from "@/stack";
 
 export default async function SideBar() {
 
-    const data = await fetch('http://localhost:8888/sections')
+    const data = await fetch('http://localhost:8888/sections', { next: { revalidate: 600 }});
     const sections = await data.json();
+
     await stackServerApp.getUser({ or: 'redirect' });
 
     return (
@@ -18,14 +19,17 @@ export default async function SideBar() {
         </div>
         <div className="drawer-side">
             <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-            <div>
+            <div className="pl-10">
                 <h2>Sections</h2>
             </div>
-            <ul className="menu text-base-content min-h-full w-80 p-4 ">
+            <ul className="menu w-80 p-2 border-l">
             {/* Sidebar content here */}
-                {sections.map((section) => 
+                {sections.data.map((section) => 
                 <li key={ sections.section_id }>
-                    <Link href={`/learn/${section.slug_field}`} className='hover:text-indigo-800 hover:text-lg'>{section.section_name}</Link>
+                    <Link href={`/learn/${section.slug_field}`} 
+                    className='hover:bg-inherit hover:text-indigo-800 no-underline block hover:font-bold hover:border-none'>
+                        {section.section_name}
+                    </Link>
                 </li>)}
             </ul>
         </div>
