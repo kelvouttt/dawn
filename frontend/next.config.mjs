@@ -1,17 +1,24 @@
 import {withSentryConfig} from '@sentry/nextjs';
 import createMDX from '@next/mdx'
 import remarkGfm from 'remark-gfm'
+import rehypeStringify from 'remark-stringify'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx']
+    pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+    reactStrictMode: true,
 };
 
 const withMDX = createMDX({
+    // Add markdown plugins here, as desired
     options: {
-        remarkPlugins: [remarkGfm],
-    }
-})
+      remarkPlugins: [remarkGfm],
+      rehypePlugins: [rehypeStringify],
+    },
+  })
+
+console.log('withMDX:', withMDX)
+console.log('nextConfig:', nextConfig.pageExtensions)
 
 export default withSentryConfig((withMDX(nextConfig)), {
 // For all available options, see:
