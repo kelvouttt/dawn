@@ -1,0 +1,70 @@
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:3000/
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+    networks:
+      - mariadb_network
+
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    env_file:
+      - ./backend/.env
+    environment:
+      - DB_PORT='3306'
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_ROOT_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - mariadb_network
+
+  db:
+    image: mariadb:11.5
+    container_name: mariadb
+    ports:
+    - "3307:3306"
+    env_file:
+      - ./backend/.env
+    environment:
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+     - mariadb_network
+    healthcheck:
+      test: "mariadb -u root -p${DB_ROOT_PASSWORD} -e 'SELECT 1'"
+      interval: 3s
+      timeout: 10s
+      retries: 10
+
+volumes:
+  mariadb_data:
+
+networks:
+  mariadb_network:
