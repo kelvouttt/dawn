@@ -4,9 +4,13 @@ import { db } from "./database"
 // app.listen needs to be standalone like below, otherwise the query won't work!
 const app = new Elysia()
 
+app.get('/', async () => {
+  console.log('Hello!')
+})
+
 app.get('/sections', async () => {
   try {
-    const rows = await db.execute('SELECT * FROM SECTIONS');
+    const rows = await db.execute('SELECT * FROM sections');
     return {
       data: rows
     }} catch (error) {
@@ -21,7 +25,7 @@ app.get('/sections', async () => {
 
 app.get('/sections/:slug', async ({ params }) => {
   const { slug } = params;
-  const section = await db.execute('SELECT * FROM SECTIONS WHERE slug_field = ?', [slug]);
+  const section = await db.execute('SELECT * FROM sections WHERE slug_field = ?', [slug]);
 
   return section[0];
   }
