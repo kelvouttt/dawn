@@ -3,7 +3,7 @@ import { stackServerApp } from "@/stack";
 
 export default async function SideBar() {
 
-    const data = await fetch('http://localhost:8888/sections', { next: { revalidate: 600 }});
+    const data = await fetch('http://backend:8888/sections', { next: { revalidate: 600 }});
     const sections = await data.json();
 
     await stackServerApp.getUser({ or: 'redirect' });

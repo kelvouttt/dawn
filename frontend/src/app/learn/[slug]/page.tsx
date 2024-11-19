@@ -20,7 +20,7 @@ async function getPost(slug: string) {
 }
 
 export default async function Section({ params }: { params: { slug: string } }) {
-    const res = await fetch(`http://localhost:8888/sections/${params.slug}`, { next: { revalidate: 600 } });
+    const res = await fetch(`http://backend:8888/sections/${params.slug}`, { next: { revalidate: 600 } });
     // Essentially, the [slug] folder is passed to the slug as string and this gets passed to params.
     const section = await res.json();
 
