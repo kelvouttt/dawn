@@ -1,7 +1,4 @@
 import {withSentryConfig} from '@sentry/nextjs';
-import createMDX from '@next/mdx'
-import remarkGfm from 'remark-gfm'
-import rehypeStringify from 'remark-stringify'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -9,18 +6,7 @@ const nextConfig = {
     reactStrictMode: true,
 };
 
-const withMDX = createMDX({
-    // Add markdown plugins here, as desired
-    options: {
-      remarkPlugins: [remarkGfm],
-      rehypePlugins: [rehypeStringify],
-    },
-  })
-
-console.log('withMDX:', withMDX)
-console.log('nextConfig:', nextConfig.pageExtensions)
-
-export default withSentryConfig((withMDX(nextConfig)), {
+export default withSentryConfig((nextConfig), {
 // For all available options, see:
 // https://github.com/getsentry/sentry-webpack-plugin#options
 
