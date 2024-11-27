@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { stackServerApp } from "@/stack";
-import SideBar from "@/components/SideBar";
 
 export default async function Home() {
 
