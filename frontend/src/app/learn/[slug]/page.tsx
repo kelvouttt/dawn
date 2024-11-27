@@ -1,21 +1,26 @@
 import fs from 'fs';
 import path from 'path';
-import { compileMDX } from 'next-mdx-remote/rsc';
 import { stackServerApp } from "@/stack";
 import SideBar from '@/components/SideBar';
+import { JSDOM } from 'jsdom';
+import DOMPurify from 'isomorphic-dompurify';
+import rehypeFormat from 'rehype-format';
+import { rehype } from 'rehype';
 
-async function getPost(slug: string) {
-    const mdxFile = fs.readFileSync(
-        path.join(process.cwd(), 'src', 'sections', `${slug}.mdx`), 
+async function getHtmlPost(slug: string) {
+    const htmlFile = fs.readFileSync(
+        path.join(process.cwd(), 'src', 'sections', `${slug}.html`),
         'utf-8');
 
-    const { content } = await compileMDX({
-        source: mdxFile,
-        options: { parseFrontmatter: true }
-    });
+    const dom = new JSDOM(htmlFile)
+    // Sanitize the HTML to protect from XSS attack, this is needed as we are using 'dangerouslySetInnerHTML' below
+    const bodyContent = DOMPurify.sanitize(dom.window.document.body.innerHTML);
+    const formatContent = await rehype()
+        .use(rehypeFormat)
+        .process(bodyContent)
 
     return {
-        content,
+        contentHtml: String(formatContent)
     }
 }
 
@@ -24,7 +29,8 @@ export default async function Section({ params }: { params: { slug: string } }) 
     // Essentially, the [slug] folder is passed to the slug as string and this gets passed to params.
     const section = await res.json();
 
-    const { content } = await getPost(params.slug); 
+    // const { content } = await getPost(params.slug);
+    const { contentHtml } = await getHtmlPost(params.slug);
 
     await stackServerApp.getUser({ or: 'redirect' });
     return (
@@ -40,7 +46,7 @@ export default async function Section({ params }: { params: { slug: string } }) 
                 <h1>{section.section_name}</h1>
                 <h4 className=''>Difficulty level: {section.difficulty}</h4>
                 <br />
-                {content}
+                <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
             </div>
             {/* <div className="mx-auto grow">
                 <article className="">
