@@ -1,31 +1,12 @@
-import fs from 'fs';
-import path from 'path';
 import { stackServerApp } from "@/stack";
+import { 
+    getServerUrl,
+    getHtmlPost,
+ } from '@/lib/utils';
 import SideBar from '@/components/SideBar';
-import { JSDOM } from 'jsdom';
-import DOMPurify from 'isomorphic-dompurify';
-import rehypeFormat from 'rehype-format';
-import { rehype } from 'rehype';
-
-async function getHtmlPost(slug: string) {
-    const htmlFile = fs.readFileSync(
-        path.join(process.cwd(), 'src', 'sections', `${slug}.html`),
-        'utf-8');
-
-    const dom = new JSDOM(htmlFile)
-    // Sanitize the HTML to protect from XSS attack, this is needed as we are using 'dangerouslySetInnerHTML' below
-    const bodyContent = DOMPurify.sanitize(dom.window.document.body.innerHTML);
-    const formatContent = await rehype()
-        .use(rehypeFormat)
-        .process(bodyContent)
-
-    return {
-        contentHtml: String(formatContent)
-    }
-}
 
 export default async function Section({ params }: { params: { slug: string } }) {
-    const res = await fetch(`http://backend:8888/sections/${params.slug}`, { next: { revalidate: 600 } });
+    const res = await fetch(`${getServerUrl()}/sections/${params.slug}`, { next: { revalidate: 600 } });
     // Essentially, the [slug] folder is passed to the slug as string and this gets passed to params.
     const section = await res.json();
 
