@@ -23,7 +23,7 @@ export default async function Home() {
       <div className="grid grid-cols-4 gap-4">
         {sections.data.map((section: Section) => 
           <div key={ section.section_id }>
-            <Link href={`/learn/${section.slug_field}`} className='hover:text-indigo-800 hover:font-bold no-underline'>{section.section_name}</Link>
+            <Link href={`/learn/${section.slug_field}`} scroll={false} className='hover:text-indigo-800 hover:font-bold no-underline'>{section.section_name}</Link>
           </div>
         )}
       </div>
