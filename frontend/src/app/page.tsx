@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { stackServerApp } from "@/stack";
 import { getServerUrl } from '@/lib/utils';
-import { SrvRecord } from 'dns';
 
 interface Section {
   section_id: number,
@@ -21,14 +20,12 @@ export default async function Home() {
       <div className="mb-6">
         <h1>Start learning</h1>
       </div>
-      <div className="">
-        <ul className='list-none'>
-          {sections.data.map((section: Section) => 
-            <li key={ section.section_id }>
-              <Link href={`/learn/${section.slug_field}`} className='hover:text-indigo-800 hover:font-bold no-underline'>{section.section_name}</Link>
-            </li>
-          )}
-        </ul>
+      <div className="grid grid-cols-4 gap-4">
+        {sections.data.map((section: Section) => 
+          <div key={ section.section_id }>
+            <Link href={`/learn/${section.slug_field}`} className='hover:text-indigo-800 hover:font-bold no-underline'>{section.section_name}</Link>
+          </div>
+        )}
       </div>
     </div>
   )
